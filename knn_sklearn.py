@@ -3,8 +3,10 @@ from pandas import read_csv
 from sklearn.preprocessing import MinMaxScaler
 import numpy as np
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn import metrics
+from sklearn import metrics, svm
 from sklearn.naive_bayes import GaussianNB, BernoulliNB, MultinomialNB
+from sklearn.ensemble import RandomForestRegressor,RandomForestClassifier
+from sklearn.neural_network import MLPClassifier
 def scaling_data(X):
     minX = np.amin(X)
     maxX = np.amax(X)
@@ -22,6 +24,7 @@ def preprocessing_data(x_raw_data,y_data):
     normalize_x_data = normalize_x_data.transpose()
     y_data = np.array(y_data[0])
     print (y_data)
+    print (normalize_x_data[0])
     print (normalize_x_data.shape)
     print (y_data.shape) 
     # Split dataset into training set and test set
@@ -41,14 +44,14 @@ def knn_model(x_data,y_data,num_neighbors):
     print("Accuracy KNN:",metrics.accuracy_score(y_test, y_pred))
 def naive_bayes_model(x_data,y_data,method):
     x_train, x_test, y_train, y_test = preprocessing_data(x_data,y_data)
-    if (method = 'GaussianNB'):
+    if (method == 'GaussianNB'):
         gnb = GaussianNB()
         gnb.fit(
             x_train,y_train
         )
         y_pred = gnb.predict(x_test)
         print("Accuracy GaussianNB:",metrics.accuracy_score(y_test, y_pred))
-    elif (method = 'BernoulliNB'):
+    elif (method == 'BernoulliNB'):
         bnb = BernoulliNB()
         bnb.fit(
             x_train,y_train
@@ -62,7 +65,26 @@ def naive_bayes_model(x_data,y_data,method):
         )
         y_pred = mnb.predict(x_test)
         print("Accuracy MultinomialNB:",metrics.accuracy_score(y_test, y_pred))
-def random_forest()
+def random_forest_model(x_data,y_data,number_of_trees):
+    x_train, x_test, y_train, y_test = preprocessing_data(x_data,y_data)
+    regressor = RandomForestClassifier(n_estimators=number_of_trees, random_state=0)  
+    regressor.fit(x_train, y_train)  
+    y_pred = regressor.predict(x_test) 
+    print (y_pred.shape)
+    print("Accuracy random forest:",metrics.accuracy_score(y_test, y_pred))
+def svm_model(x_data,y_data, kernel_type):
+    print ('---------svm model-------------')
+    x_train, x_test, y_train, y_test = preprocessing_data(x_data,y_data)
+    clf = svm.SVC(gamma='scale', kernel = kernel_type)
+    clf.fit(x_train, y_train)
+    y_pred = clf.predict(x_test)
+    print("Accuracy support vector machine:",metrics.accuracy_score(y_test, y_pred))
+def mlp_model(x_data,y_data):
+    x_train, x_test, y_train, y_test = preprocessing_data(x_data,y_data)
+    clf = MLPClassifier(activation = 'tanh', learning_rate = "adaptive", max_iter = 2000 , solver='sgd', alpha=1e-5, hidden_layer_sizes=(32), random_state=1)
+    clf.fit(x_train,y_train)
+    y_pred = clf.predict(x_test)
+    print("Accuracy mlp:",metrics.accuracy_score(y_test, y_pred))
 if __name__ == '__main__':
     data_file = './data/MHEALTHDATASET/data3.txt'
     colnames = ['accX','accY','accZ','gyroX','gyroY','gyroZ','labels'] 
@@ -77,8 +99,16 @@ if __name__ == '__main__':
     labels = df['labels'].values
     x_raw_data = [accX,accY,accZ,gyroX,gyroY,gyroZ]
     y_data = [labels]
-    print (accX)
-    num_neighbors = 3
-    knn_model(x_raw_data,y_data,num_neighbors)
-    method = 'GaussianNB'
-    naive_bayes_model(x_raw_data, y_data, method)
+    # knn model
+    # num_neighbors = 3
+    # knn_model(x_raw_data,y_data,num_neighbors)
+    # # naive_bayes_model
+    # method = 'GaussianNB'
+    # naive_bayes_model(x_raw_data, y_data, method)
+    # # random forest model
+    # number_of_trees = 30
+    # random_forest_model(x_raw_data, y_data, number_of_trees)
+    # svm model
+    # kernel_type = 'rbf'
+    # svm_model(x_raw_data, y_data, kernel_type)
+    mlp_model(x_raw_data, y_data)
