@@ -11,6 +11,8 @@ with open('./results/min_max.pkl','rb') as input_file :
 @app.route('/getaction', methods=['POST'])
 def predict_action(): 
     input = request.json['value']
+    print (type(input))
+    return input
     model = read_model(Config.file_save_classifier_model)
     label_list = Config.label
     print (min_arr)
