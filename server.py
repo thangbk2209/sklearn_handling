@@ -28,6 +28,8 @@ def predict_action():
         "action": action
     }
     return jsonify(outputs=outputs)
+@app.route('/getgesture', methods=['POST'])
+def detect_gesture(): 
 def read_model(file_save_classifier_model):
     with open(file_save_classifier_model,'rb') as input_file :
         model = pk.load(input_file)
