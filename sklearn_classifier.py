@@ -10,6 +10,7 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.cluster import KMeans
 import sys
 import pickle as pk
+import matplotlib.pyplot as plt 
 def scaling_data(X):
     minX = np.amin(X)
     maxX = np.amax(X)
@@ -122,6 +123,10 @@ if __name__ == '__main__':
     accX = df['accX'].values
     accY = df['accY'].values
     accZ = df['accZ'].values
+    print (accZ.shape)
+    plt.plot(accZ) 
+    plt.show()
+    lol
     gyroX = df['gyroX'].values
     gyroY = df['gyroY'].values
     gyroZ = df['gyroZ'].values
