@@ -11,6 +11,7 @@ from sklearn.cluster import KMeans
 import sys
 import pickle as pk
 import matplotlib.pyplot as plt 
+from visualize_prediction import *
 def scaling_data(X):
     minX = np.amin(X)
     maxX = np.amax(X)
@@ -87,6 +88,9 @@ def random_forest_model(x_data,y_data,number_of_trees):
     clf.fit(x_train, y_train)  
     y_pred = clf.predict(x_test) 
     print("Accuracy random forest:",metrics.accuracy_score(y_test, y_pred))
+    visualize(x_test,set(y_test))
+    
+    print (y_pred)
     return clf, metrics.accuracy_score(y_test, y_pred)
 def svm_model(x_data,y_data, kernel_type):
     print ('---------svm model-------------')
@@ -123,10 +127,10 @@ if __name__ == '__main__':
     accX = df['accX'].values
     accY = df['accY'].values
     accZ = df['accZ'].values
-    print (accZ.shape)
-    plt.plot(accZ) 
-    plt.show()
-    lol
+    # print (accZ.shape)
+    # plt.plot(accZ) 
+    # plt.show()
+    # lol
     gyroX = df['gyroX'].values
     gyroY = df['gyroY'].values
     gyroZ = df['gyroZ'].values
