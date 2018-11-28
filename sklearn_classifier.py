@@ -12,6 +12,25 @@ import sys
 import pickle as pk
 import matplotlib.pyplot as plt 
 from visualize_prediction import *
+import matplotlib.pyplot as plt
+import numpy as np
+from sklearn.manifold import TSNE
+def scatterplot(x_data, y_data, x_label="", y_label="", title="", color = "r", yscale_log=False):
+
+    # Create the plot object
+    _, ax = plt.subplots()
+
+    # Plot the data, set the size (s), color and transparency (alpha)
+    # of the points
+    ax.scatter(x_data, y_data, s = 10, color = color, alpha = 0.75)
+
+    if yscale_log == True:
+        ax.set_yscale('log')
+
+    # Label the axes and provide a title
+    ax.set_title(title)
+    ax.set_xlabel(x_label)
+    ax.set_ylabel(y_label)
 def scaling_data(X):
     minX = np.amin(X)
     maxX = np.amax(X)
@@ -128,16 +147,30 @@ if __name__ == '__main__':
     accY = df['accY'].values
     accZ = df['accZ'].values
     # print (accZ.shape)
-    # plt.plot(accZ) 
+    # plt.plot(accZ[24577:27648]) 
     # plt.show()
     # lol
+    
     gyroX = df['gyroX'].values
     gyroY = df['gyroY'].values
     gyroZ = df['gyroZ'].values
     labels = df['labels'].values
     x_raw_data = [accX,accY,accZ,gyroX,gyroY,gyroZ]
+    
     y_data = [labels]
     x_raw_data = np.asarray(x_raw_data)
+    x_raw_data = np.transpose(x_raw_data)
+    y_data = np.asarray(y_data)
+    y_data = np.transpose(y_data)
+    print ("start")
+    tsne = TSNE(n_components=2, random_state=0)
+    np.set_printoptions(suppress=True)
+    x_raw = tsne.fit_transform(x_raw_data)
+    print (x_raw.shape)
+    print (y_data.shape)
+    # scatterplot(accX,y_data)
+    plt.scatter(x_raw[:,0], x_raw[:,1], c=y_data)
+    plt.show()
     if (sys.argv[1] == 'knn'):
         num_neighbors = 3
         file_save_classifier_model = 'results/knn/knn_' +str(num_neighbors)+'_ver_' + sys.argv[2] + '.pkl'

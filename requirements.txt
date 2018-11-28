@@ -1,0 +1,8 @@
+flask
+pickle
+numpy
+sys
+codecs
+sklearn
+matplotlib
+pandas

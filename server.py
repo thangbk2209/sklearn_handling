@@ -7,7 +7,7 @@ app = Flask(__name__)
 with open('./results/min_max.pkl','rb') as input_file :
     min_arr = pk.load(input_file)
     max_arr = pk.load(input_file)
-
+file = open('data.txt','w') 
 @app.route('/getaction', methods=['POST'])
 def predict_action(): 
     input = request.json['acc']
@@ -35,6 +35,7 @@ def predict_action():
 def detect_gesture(): 
     acc = request.json['acc']
     timestamps = request.json['timestamps']
+    print (acc)
     number_samples = len(acc)
     Ax = []
     Ay = []
@@ -49,14 +50,27 @@ def detect_gesture():
     print (Ax,Ay,Az)
     action = find_max_change(Ax,Ay,Az)
     print (action)
-    if (action == 'tay_len_xuong'):
-        gesture = predict_gesture(Az,'up','down')
+    if (action == 'dung_yen'):
+        for i in range(number_samples):
+            data = str(acc[i][0]) + ',' + str(acc[i][1]) + ',' + str(acc[i][2]) + ',' + str(acc[i][3]) + ',' + str(acc[i][4]) + ',' + str(acc[i][5]) + ',' + action
+            file.write(data)
+
+        return action
+    elif (action == 'tay_len_xuong'):
+        gesture = predict_gesture(Az, 'down', 'up')
+        for i in range(number_samples):
+            data = str(acc[i][0]) + ',' + str(acc[i][1]) + ',' + str(acc[i][2]) + ',' + str(acc[i][3]) + ',' + str(acc[i][4]) + ',' + str(acc[i][5]) + ',' + gesture
+            file.write(data)
         return gesture 
-    if (action == 'tay_trai_phai'):
+    elif (action == 'tay_trai_phai'):
         gesture = predict_gesture(Ay,'right','left')
+        for i in range(number_samples):
+            data = str(acc[i][0]) + ',' + str(acc[i][1]) + ',' + str(acc[i][2]) + ',' + str(acc[i][3]) + ',' + str(acc[i][4]) + ',' + str(acc[i][5]) + ',' + gesture
         return gesture 
     elif (action == 'tay_ra_vao'):
         gesture = predict_gesture(Ax,'out','in')
+        for i in range(number_samples):
+            data = str(acc[i][0]) + ',' + str(acc[i][1]) + ',' + str(acc[i][2]) + ',' + str(acc[i][3]) + ',' + str(acc[i][4]) + ',' + str(acc[i][5]) + ',' + gesture
         return gesture 
     
 def predict_gesture(arr,label1,label2):
@@ -81,6 +95,8 @@ def find_max_change(Ax,Ay,Az):
     z_change = max_az - min_az
     arr = [x_change,y_change,z_change]
     max_change = np.amax(arr)
+    if(max_change < 1000):
+        return 'dung_yen'
     if (max_change == z_change):
         return 'tay_len_xuong'
     elif(max_change == y_change):
